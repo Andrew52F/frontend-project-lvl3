@@ -8,29 +8,27 @@
 </head>
 <body>
   <main class="flex-grow-1">
-    <section class="container-fluid bg-secondary bg-gradient text-center">
-      <div class="row py-5">
-        <div class="col-lg-8 col-md-10 mx-auto text-light">
-          <h1 class="display-1"><span class="text-warning">RSS</span> агрегатор</h1>
-          <p class="lead text-light">Начните читать RSS сегодня! Это легко, это красиво.</p>
-          <form action="" class="rss-form text-body">
-            <div class="row justify-content-center">
-              <div class="col-10 col-md-9 col-sm-8 py-2">
-                <div class="form-floating">
-                  <input type="text" id="url-input" class="form-control border border-warning w-100" name="url" aria-label="url" placeholder="ссылка RSS" autocomplete="off" autofocus required>
-                  <label for="url-input">Ссылка RSS</label>
-                </div>
-                <p class="mt-2 mb-0  position-absolute text-light d-none d-sm-block ">Пример: https://ru.hexlet.io/lessons.rss</p>
-              </div>
-              <div class="col-8 col-sm-2 py-2">
-                <button type="submit" class="h-100 btn btn-warning btn-lg px-5 px-sm-1 px-lg-5"aria-label="add">Добавить</button>
-              </div>
-            </div>
-          </form>
-           <p class="feedback m-0 position-absolute small text-danger"></p>
-        </div>
+    <section class="container-fluid bg-dark p-5">
+      <div class="row">
+         <div class="col-md-10 col-lg-8 mx-auto text-white">
+            <h1 class="display-3 mb-0">RSS агрегатор</h1>
+            <p class="lead">Начните читать RSS сегодня! Это легко, это красиво.</p>
+            <form action="" class="rss-form text-body">
+               <div class="row">
+                  <div class="col">
+                     <div class="form-floating">
+                      <input id="url-input" autofocus="" required="" name="url" aria-label="url" class="form-control w-100" placeholder="ссылка RSS" autocomplete="off">
+                      <label for="url-input">Ссылка RSS</label>
+                    </div>
+                  </div>
+                  <div class="col-auto"><button type="submit" aria-label="add" class="h-100 btn btn-lg btn-primary px-sm-5">Добавить</button></div>
+               </div>
+            </form>
+            <p class="mt-2 mb-0 text-muted">Пример: https://ru.hexlet.io/lessons.rss</p>
+            <p class="feedback m-0 position-absolute small text-danger"></p>
+         </div>
       </div>
-    </section>
+   </section>
     <section class="container-fluid container-xxl p-5">
       <div class="row">
         <div class="col-md-10 col-lg-8 order-1 mx-auto posts"></div>
