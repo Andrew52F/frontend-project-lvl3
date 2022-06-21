@@ -1,6 +1,5 @@
 import onChange from 'on-change';
 
-
 const renderPostCard = (post, i18n) => {
   const postsList = document.querySelector('#postsList');
   const postCard = document.createElement('li');
@@ -101,8 +100,7 @@ export default (state, i18n) => onChange(state, (path, value, prevValue, diff) =
     }
     renderFeedCard(diff.args[0]);
     console.log('feeds');
-    
-  };
+  }
   if (path === 'posts') {
     if (posts.childNodes.length === 0) {
       setPostslistSection(posts, i18n);

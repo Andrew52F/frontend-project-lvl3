@@ -15,14 +15,14 @@ const handleAddRss = (link, watchedState, i18n) => {
         }
         watchedState.form.state = 'failed';
       })
-      .then((feed) => {
-        watchedState.feeds.push(feed.feed);
-        feed.posts.sort((a, b) => a.pubDate - b.pubDate).forEach((post) => {
-          console.log(post.pubDate);
-          watchedState.posts.push(post);
-        })
-        watchedState.form.state = 'success';
-      });
+        .then((feed) => {
+          watchedState.feeds.push(feed.feed);
+          feed.posts.sort((a, b) => a.pubDate - b.pubDate).forEach((post) => {
+            console.log(post.pubDate);
+            watchedState.posts.push(post);
+          });
+          watchedState.form.state = 'success';
+        });
     }
   });
 };
