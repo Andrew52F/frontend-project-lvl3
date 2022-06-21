@@ -1,16 +1,17 @@
 import i18next from 'i18next';
 import { setLocale } from 'yup';
+import handleAddRss from './handlers.js';
 import initView from './view.js';
-import validateLink from './validateLink.js';
 import resources from './locales/index.js';
 
 export default () => {
   const state = {
     form: {
       state: 'filiing',
-      feedback: null,
+      error: null,
     },
-    feedList: [],
+    feeds: [],
+    posts: [],
 
   };
 
@@ -37,11 +38,6 @@ export default () => {
     e.preventDefault();
     const data = new FormData(e.target);
     const link = data.get('url').trim();
-    validateLink(link, state.feedList, i18next).then((error) => {
-      if (!error && !state.feedList.includes(link)) {
-        state.feedList.push(link);
-      }
-      watchedState.form = error ? { message: error, state: 'failed' } : { message: i18n.t('success'), state: 'success' };
-    });
+    handleAddRss(link, watchedState, i18n);
   });
 };

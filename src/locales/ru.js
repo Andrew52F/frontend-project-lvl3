@@ -5,7 +5,10 @@ export default {
       urlInvalid: 'Ссылка должна быть валидным URL',
       urlExists: 'RSS уже существует',
       rssInvalid: 'Ресурс не содержит валидный RSS',
-      connection: 'Ошибка сети',
+      connectionError: 'Ошибка сети',
     },
+    feeds: 'Фиды',
+    posts: 'Посты',
+    view: 'Просмотр',
   },
 };
