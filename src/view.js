@@ -1,9 +1,9 @@
 import onChange from 'on-change';
 
-const renderPostCard = (post, i18n) => {
-  const postsList = document.querySelector('#postsList');
+const buildPost = (post, i18n) => {
   const postCard = document.createElement('li');
   postCard.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
+  postCard.dataset.parent = post.feedId;
   const title = document.createElement('a');
   title.setAttribute('href', post.link);
   title.classList.add('fw-bold');
@@ -18,9 +18,9 @@ const renderPostCard = (post, i18n) => {
   button.dataset.bsTarget = '#modal';
   button.innerText = i18n.t('view');
   postCard.append(title, button);
-  postsList.prepend(postCard);
+  return postCard;
 };
-const setPostslistSection = (section, i18n) => {
+const setPostsList = (postsSection, i18n) => {
   const card = document.createElement('div');
   card.classList.add('card', 'border-0');
   const cardBody = document.createElement('div');
@@ -31,15 +31,22 @@ const setPostslistSection = (section, i18n) => {
   cardBody.append(cardTitle);
   const postsList = document.createElement('ul');
   postsList.classList.add('list-group', 'border-0', 'rounded-0');
-  postsList.id = 'postsList';
   card.append(cardBody, postsList);
-  section.append(card);
+  postsSection.prepend(card);
+};
+const renderPosts = (post, i18n) => {
+  const postsSection = document.querySelector('.posts');
+  if (postsSection.innerHTML === '') {
+    setPostsList(postsSection, i18n);
+  }
+  const postsList = postsSection.querySelector('.list-group');
+  postsList.prepend(buildPost(post, i18n));
 };
 
-const renderFeedCard = (feed) => {
-  const feedsList = document.querySelector('#feedsList');
+const buildFeed = (feed) => {
   const feedCard = document.createElement('li');
   feedCard.classList.add('list-group-item', 'border-0', 'border-end-0');
+  feedCard.dataset.id = feed.id;
   const title = document.createElement('h3');
   title.classList.add('h6', 'm-0');
   title.innerText = feed.title;
@@ -47,28 +54,19 @@ const renderFeedCard = (feed) => {
   description.classList.add('m-0', 'small', 'text-black-50');
   description.innerText = feed.description;
   feedCard.append(title, description);
-  feedsList.prepend(feedCard);
+  return feedCard;
 };
-const setFeedslistSection = (section, i18n) => {
-  const card = document.createElement('div');
-  card.classList.add('card', 'border-0');
-  const cardBody = document.createElement('div');
-  cardBody.classList.add('card-body');
-  const cardTitle = document.createElement('h2');
-  cardTitle.classList.add('card-title', 'h4');
-  cardTitle.innerText = i18n.t('feeds');
-  cardBody.append(cardTitle);
-  const feedsList = document.createElement('ul');
-  feedsList.classList.add('listGroup', 'border-0', 'rounded-0');
-  feedsList.id = 'feedsList';
-  card.append(cardBody, feedsList);
-  section.prepend(card);
+const renderFeeds = (feed, i18n) => {
+  const feedsSection = document.querySelector('.feeds');
+  if (feedsSection.innerHTML === '') {
+    setPostsList(feedsSection, i18n);
+  }
+  const feedsList = feedsSection.querySelector('.list-group');
+  feedsList.prepend(buildFeed(feed, i18n));
 };
-export default (state, i18n) => onChange(state, (path, value, prevValue, diff) => {
+export default (state, i18n) => onChange(state, (path, value, prev, diff) => {
   const urlInput = document.querySelector('#url-input');
   const feedback = document.querySelector('.feedback');
-  const feeds = document.querySelector('div.feeds');
-  const posts = document.querySelector('div.posts');
   if (path === 'form.state') {
     switch (value) {
       case 'waiting':
@@ -79,6 +77,7 @@ export default (state, i18n) => onChange(state, (path, value, prevValue, diff) =
         urlInput.classList.remove('is-invalid');
         feedback.classList.remove('text-danger');
         urlInput.focus();
+        urlInput.value = '';
         feedback.classList.add('text-success');
         feedback.textContent = i18n.t('success');
         break;
@@ -95,17 +94,9 @@ export default (state, i18n) => onChange(state, (path, value, prevValue, diff) =
     }
   }
   if (path === 'feeds') {
-    if (feeds.childNodes.length === 0) {
-      setFeedslistSection(feeds, i18n);
-    }
-    renderFeedCard(diff.args[0]);
-    console.log('feeds');
+    renderFeeds(diff.args[0], i18n);
   }
   if (path === 'posts') {
-    if (posts.childNodes.length === 0) {
-      setPostslistSection(posts, i18n);
-    }
-    renderPostCard(diff.args[0], i18n);
-    console.log('posts');
+    renderPosts(diff.args[0], i18n);
   }
 });
