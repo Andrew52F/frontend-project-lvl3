@@ -8,7 +8,6 @@ const buildPost = (post, i18n) => {
   title.setAttribute('href', post.link);
   title.classList.add('fw-bold');
   title.setAttribute('target', '_blank');
-  title.dataset.id = post.id;
   title.innerText = post.title;
   const button = document.createElement('button');
   button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
@@ -46,7 +45,6 @@ const renderPosts = (post, i18n) => {
 const buildFeed = (feed) => {
   const feedCard = document.createElement('li');
   feedCard.classList.add('list-group-item', 'border-0', 'border-end-0');
-  feedCard.dataset.id = feed.id;
   const title = document.createElement('h3');
   title.classList.add('h6', 'm-0');
   title.innerText = feed.title;
