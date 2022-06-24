@@ -1,13 +1,29 @@
+/* eslint-disable no-param-reassign */
 import onChange from 'on-change';
+import 'bootstrap';
 
-const buildPost = (post, i18n) => {
+const showModal = (post, i18n) => {
+  const modal = document.querySelector('#modal');
+  const title = modal.querySelector('.modal-title');
+  const article = modal.querySelector('.modal-body');
+  const linkButton = modal.querySelector('.full-article');
+  const closeBtn = modal.querySelector('#closeBtn');
+  title.textContent = post.title;
+  article.innerHTML = post.description;
+  linkButton.setAttribute('href', post.link);
+  linkButton.innerText = i18n.t('modal.readArticle');
+  closeBtn.innerText = i18n.t('modal.closeModal');
+  modal.classList.add('show');
+};
+
+const buildPost = (post, state, i18n) => {
   const postCard = document.createElement('li');
   postCard.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
-  postCard.dataset.parent = post.feedId;
   const title = document.createElement('a');
   title.setAttribute('href', post.link);
   title.classList.add('fw-bold');
   title.setAttribute('target', '_blank');
+  title.setAttribute('rel', 'noopener noreferrer');
   title.innerText = post.title;
   const button = document.createElement('button');
   button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
@@ -15,7 +31,14 @@ const buildPost = (post, i18n) => {
   button.dataset.id = post.id;
   button.dataset.bsToggle = 'modal';
   button.dataset.bsTarget = '#modal';
-  button.innerText = i18n.t('view');
+  button.innerText = i18n.t('modal.showModal');
+  button.addEventListener('click', () => {
+    console.log('bibi');
+    state.uiState.shownPostsIds.push(post.id);
+    showModal(post, i18n);
+    title.classList.remove('fw-bold');
+    title.classList.add('fw-normal', 'link-secondary');
+  });
   postCard.append(title, button);
   return postCard;
 };
@@ -33,13 +56,13 @@ const setPostsList = (postsSection, i18n) => {
   card.append(cardBody, postsList);
   postsSection.prepend(card);
 };
-const renderPosts = (post, i18n) => {
+const renderPosts = (post, state, i18n) => {
   const postsSection = document.querySelector('.posts');
   if (postsSection.innerHTML === '') {
     setPostsList(postsSection, i18n);
   }
   const postsList = postsSection.querySelector('.list-group');
-  postsList.prepend(buildPost(post, i18n));
+  postsList.prepend(buildPost(post, state, i18n));
 };
 
 const buildFeed = (feed) => {
@@ -95,6 +118,6 @@ export default (state, i18n) => onChange(state, (path, value, prev, diff) => {
     renderFeeds(diff.args[0], i18n);
   }
   if (path === 'posts') {
-    renderPosts(diff.args[0], i18n);
+    renderPosts(diff.args[0], state, i18n);
   }
 });

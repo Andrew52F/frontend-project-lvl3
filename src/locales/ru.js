@@ -9,6 +9,10 @@ export default {
     },
     feeds: 'Фиды',
     posts: 'Посты',
-    view: 'Просмотр',
+    modal: {
+      showModal: 'Просмотр',
+      readArticle: 'Читать полностью',
+      closeModal: 'Закрыть',
+    },
   },
 };

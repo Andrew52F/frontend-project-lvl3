@@ -3,7 +3,7 @@ import validateLink from './validateLink.js';
 import getRssContent from './getRssContent.js';
 import updateRss from './updateRss.js';
 
-const handleAddRss = (link, watchedState, i18n) => {
+export default (link, watchedState, i18n) => {
   validateLink(link, watchedState.feeds).then((error) => {
     watchedState.form.error = error;
     if (error) {
@@ -20,5 +20,3 @@ const handleAddRss = (link, watchedState, i18n) => {
     }
   });
 };
-
-export default handleAddRss;

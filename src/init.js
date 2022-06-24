@@ -1,6 +1,6 @@
 import i18next from 'i18next';
 import { setLocale } from 'yup';
-import handleAddRss from './handlers.js';
+import handleAddRss from './handleAddRss.js';
 import initView from './view.js';
 import resources from './locales/index.js';
 
@@ -12,9 +12,10 @@ export default () => {
     },
     feeds: [],
     posts: [],
-
+    uiState: {
+      shownPostsIds: [],
+    },
   };
-
   const i18n = i18next.createInstance();
   i18n.init({
     lng: 'ru',
