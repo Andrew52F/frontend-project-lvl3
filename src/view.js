@@ -7,13 +7,12 @@ const showModal = (post, i18n) => {
   const title = modal.querySelector('.modal-title');
   const article = modal.querySelector('.modal-body');
   const linkButton = modal.querySelector('.full-article');
-  const closeBtn = modal.querySelector('#closeBtn');
+  const closeBtns = document.querySelectorAll('[data-bs-dismiss="modal"]');
   title.textContent = post.title;
   article.innerHTML = post.description;
   linkButton.setAttribute('href', post.link);
   linkButton.innerText = i18n.t('modal.readArticle');
-  closeBtn.innerText = i18n.t('modal.closeModal');
-  modal.classList.add('show');
+  closeBtns[1].innerText = i18n.t('modal.closeModal');
 };
 
 const buildPost = (post, state, i18n) => {
@@ -60,6 +59,7 @@ const renderPosts = (post, state, i18n) => {
   const postsSection = document.querySelector('.posts');
   if (postsSection.innerHTML === '') {
     setPostsList(postsSection, i18n);
+    // setModal(i18n);
   }
   const postsList = postsSection.querySelector('.list-group');
   postsList.prepend(buildPost(post, state, i18n));
