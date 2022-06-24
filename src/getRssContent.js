@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import _ from 'lodash';
 import axios from 'axios';
 import parseRss from './parseRss.js';
