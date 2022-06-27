@@ -2,9 +2,10 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "RSS agregator",
-  "main": "index.js",
+  "type": "module",
+  "main": "./src/init.js",
   "scripts": {
-    "test": "jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
     "build": "webpack",
     "dev": "webpack serve"
   },

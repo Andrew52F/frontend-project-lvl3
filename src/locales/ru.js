@@ -2,9 +2,9 @@ export default {
   translation: {
     success: 'RSS успешно загружен',
     errors: {
-      urlInvalid: 'Ссылка должна быть валидным URL',
-      urlExists: 'RSS уже существует',
-      rssInvalid: 'Ресурс не содержит валидный RSS',
+      invalidUrl: 'Ссылка должна быть валидным URL',
+      urlUlreadyAdded: 'RSS уже существует',
+      invalidRss: 'Ресурс не содержит валидный RSS',
       connectionError: 'Ошибка сети',
     },
     feeds: 'Фиды',
