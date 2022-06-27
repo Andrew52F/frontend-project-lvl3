@@ -77,28 +77,27 @@ export default (state, i18n) => {
     const postsSection = document.querySelector('.posts');
     if (path === 'form.state') {
       switch (value) {
-        case 'waiting':
-          console.log('waiting');
-          break;
         case 'success':
           console.log('success');
           urlInput.classList.remove('is-invalid');
           feedback.classList.remove('text-danger');
           urlInput.focus();
-          urlInput.value = '';
           feedback.classList.add('text-success');
           feedback.textContent = i18n.t('success');
           break;
         case 'failed':
-          console.log('failed');
           urlInput.classList.add('is-invalid');
+          feedback.classList.remove('text-success');
+          feedback.classList.add('text-danger');
           break;
         default:
-          console.log('default');
+          urlInput.classList.remove('is-invalid');
+          feedback.classList.remove('text-danger', 'text-success');
           break;
       }
     }
     if (path === 'form.error') {
+      if (value !== null) { console.error(`ERROR: ${value}`); }
       switch (value) {
         case 'urlUlreadyAdded':
           feedback.textContent = i18n.t('errors.urlUlreadyAdded');
@@ -109,11 +108,12 @@ export default (state, i18n) => {
         case 'invalidRss':
           feedback.textContent = i18n.t('errors.invalidRss');
           break;
-        default:
+        case 'invalidUrl':
           feedback.textContent = i18n.t('errors.invalidUrl');
+          break;
+        default:
+          feedback.textContent = '';
       }
-      feedback.classList.remove('text-success');
-      feedback.classList.add('text-danger');
     }
     if (path === 'feeds') {
       if (feedsSection.innerHTML === '') {

@@ -9,6 +9,7 @@ const requestRss = (link) => {
   url.searchParams.set('disableCache', 'true');
   return axios.get(url);
 };
+
 const parseRss = (xml) => {
   try {
     const parser = new DOMParser();
@@ -43,12 +44,14 @@ export default (link, state) => requestRss(link)
   .then((data) => {
     data.feed.link = link;
     return normalizeData(data, state);
-  })
-  .catch((err) => {
+  }).catch((err) => {
     if (err.isAxiosError) {
       state.form.error = 'connectionError';
-    } else {
+    } else if (err.message === 'parsing error') {
       state.form.error = 'invalidRss';
+    } else {
+      state.form.error = null;
     }
+
     state.form.state = 'failed';
   });

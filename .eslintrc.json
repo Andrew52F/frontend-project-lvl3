@@ -14,7 +14,6 @@
     "rules": {
       "import/extensions": "off",
       "no-console": "off",
-      "no-underscore-dangle": [2, { "allow": ["__filename", "__dirname"] }],
-      "no-param-reassign": ["error", { "props": true, "ignorePropertyModificationsFor": ["watchedState"] }]
+      "no-underscore-dangle": [2, { "allow": ["__filename", "__dirname"] }]
     }
 }

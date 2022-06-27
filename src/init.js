@@ -10,7 +10,7 @@ import getRssData from './getRssData.js';
 export default () => {
   const state = {
     form: {
-      state: 'filiing',
+      state: 'pending',
       error: null,
     },
     feeds: [],
@@ -43,28 +43,34 @@ export default () => {
     return scheme.validate(rssLink).then(() => null).catch((e) => e.message);
   };
   const feedLinks = [];
-  const updateAllFeeds = (link) => {
+  const updateAllFeeds = (link, ustate) => {
     feedLinks.push(link);
     const updateRss = () => {
-      Promise.all(feedLinks.map((l) => getRssData(l, watchedState)))
-        .then((datas) => {
-          const posts = datas.flatMap((result) => result.posts);
-          const allPosts = _.union(posts, watchedState.posts);
-          const newPosts = _.differenceBy(allPosts, watchedState.posts, 'link');
+      Promise.all(feedLinks.map((l) => getRssData(l, ustate)))
+        .then((results) => {
+          if (results[0] === undefined) { return; } // чтобы не спамило ошибками
+          if (ustate.form.error === 'connectionError') {
+            // сработает после востановления соединения
+            ustate.form.error = null;
+            ustate.form.state = 'pending';
+          }
+          const posts = results.flatMap((result) => result.posts);
+          const allPosts = _.union(posts, ustate.posts);
+          const newPosts = _.differenceBy(allPosts, ustate.posts, 'link');
           if (newPosts.length !== 0) {
             console.table(newPosts);
             const sortedNewPosts = newPosts.sort((a, b) => a.pubDate - b.pubDate);
-            sortedNewPosts.forEach((newPost) => watchedState.posts.push(newPost));
+            sortedNewPosts.forEach((newPost) => ustate.posts.push(newPost));
           }
         })
         .finally(() => setTimeout(() => {
-          updateRss(watchedState);
+          updateRss();
         }, 5000));
     };
-    if (watchedState.updateRssStatus === 'off') {
-      watchedState.updateRssStatus = 'on';
+    if (ustate.updateRssStatus === 'off') {
+      ustate.updateRssStatus = 'on';
       setTimeout(() => {
-        updateRss(watchedState);
+        updateRss();
       }, 5000);
     }
   };
@@ -75,13 +81,15 @@ export default () => {
     const formData = new FormData(e.target);
     const link = formData.get('url').trim();
     validateLink(link, watchedState.feeds).then((error) => {
-      watchedState.form.error = error;
       if (error) {
+        console.log(error);
+        watchedState.form.error = error;
         watchedState.form.state = 'failed';
         return;
       }
-      getRssData(link, state)
+      getRssData(link, watchedState)
         .then((data) => {
+          if (data === undefined) { return; }
           console.log(data);
           watchedState.feeds.push(data.feed);
           const sortedNewPosts = data.posts.sort((a, b) => a.pubDate - b.pubDate);
