@@ -26,7 +26,7 @@ const buildFeed = (feed) => {
   feedCard.append(title, description);
   return feedCard;
 };
-const buildPost = (post, state, i18n) => {
+const buildPost = (post, i18n) => {
   const postCard = document.createElement('li');
   postCard.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
   const title = document.createElement('a');
@@ -35,6 +35,7 @@ const buildPost = (post, state, i18n) => {
   title.setAttribute('target', '_blank');
   title.setAttribute('rel', 'noopener noreferrer');
   title.textContent = post.title;
+  title.dataset.postId = post.id;
   const button = document.createElement('button');
   button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
   button.setAttribute('type', 'button');
@@ -59,7 +60,8 @@ const setList = (section, i18n, state) => {
   postsList.classList.add('list-group', 'border-0', 'rounded-0');
   if (isPosts) {
     postsList.addEventListener('click', (e) => {
-      if (e.target.dataset.postId) {
+      const isButton = e.target.tagName === 'BUTTON';
+      if (isButton) {
         const { postId } = e.target.dataset;
         console.log(postId);
         state.uiState.activePostId = postId;
@@ -127,11 +129,14 @@ export default (state, i18n) => {
         setList(postsSection, i18n, watchedState);
       }
       const postsList = postsSection.querySelector('.list-group');
-      postsList.prepend(buildPost(diff.args[0], state, i18n));
+      postsList.prepend(buildPost(diff.args[0], i18n));
     }
     if (path === 'uiState.activePostId') {
       const post = state.posts.find((p) => p.id === value);
       showModal(post, i18n);
+      const postTitle = document.querySelector(`a[data-post-id="${value}"]`);
+      postTitle.classList.remove('fw-bold');
+      postTitle.classList.add('fw-normal', 'link-secondary');
     }
   });
   return watchedState;
