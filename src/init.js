@@ -15,7 +15,6 @@ export default () => {
     },
     feeds: [],
     posts: [],
-    updateRssStatus: 'off',
     uiState: {
       activePostId: null,
     },
@@ -42,39 +41,24 @@ export default () => {
     const scheme = yup.string().url().notOneOf(feedLinks);
     return scheme.validate(rssLink).then(() => null).catch((e) => e.message);
   };
-  const feedLinks = [];
-  const updateAllFeeds = (link, ustate) => {
-    feedLinks.push(link);
-    const updateRss = () => {
-      Promise.all(feedLinks.map((l) => getRssData(l, ustate)))
-        .then((results) => {
-          if (results[0] === undefined) { return; } // чтобы не спамило ошибками
-          if (ustate.form.error === 'connectionError') {
-            // сработает после востановления соединения
-            ustate.form.error = null;
-            ustate.form.state = 'pending';
-          }
-          const posts = results.flatMap((result) => result.posts);
-          const allPosts = _.union(posts, ustate.posts);
-          const newPosts = _.differenceBy(allPosts, ustate.posts, 'link');
-          if (newPosts.length !== 0) {
-            console.table(newPosts);
-            const sortedNewPosts = newPosts.sort((a, b) => a.pubDate - b.pubDate);
-            sortedNewPosts.forEach((newPost) => ustate.posts.push(newPost));
-          }
-        })
-        .finally(() => setTimeout(() => {
-          updateRss();
-        }, 5000));
-    };
-    if (ustate.updateRssStatus === 'off') {
-      ustate.updateRssStatus = 'on';
-      setTimeout(() => {
-        updateRss();
-      }, 5000);
-    }
+  const updateAllFeeds = (ustate) => {
+    Promise.all(ustate.feeds.map(({ link }) => getRssData(link, ustate)))
+      .then((results) => {
+        if (results[0] === undefined) { return; }
+        const posts = results.flatMap((result) => result.posts);
+        const allPosts = _.union(posts, ustate.posts);
+        const newPosts = _.differenceBy(allPosts, ustate.posts, 'link');
+        if (newPosts.length !== 0) {
+          console.table(newPosts);
+          const sortedNewPosts = newPosts.sort((a, b) => a.pubDate - b.pubDate);
+          sortedNewPosts.forEach((newPost) => ustate.posts.push(newPost));
+        }
+      })
+      .finally(() => setTimeout(() => {
+        updateAllFeeds(ustate);
+      }, 5000));
   };
-
+  updateAllFeeds(watchedState);
   const form = document.querySelector('.rss-form');
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -95,8 +79,6 @@ export default () => {
           const sortedNewPosts = data.posts.sort((a, b) => a.pubDate - b.pubDate);
           sortedNewPosts.forEach((newPost) => watchedState.posts.push(newPost));
           watchedState.form.state = 'success';
-          e.target.reset();
-          updateAllFeeds(link, watchedState);
         });
     });
   });

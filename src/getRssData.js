@@ -40,8 +40,8 @@ const normalizeData = (data, state) => {
   return data;
 };
 export default (link, state) => requestRss(link)
-  .then((response) => parseRss(response.data.contents))
-  .then((data) => {
+  .then((response) => {
+    const data = parseRss(response.data.contents);
     data.feed.link = link;
     return normalizeData(data, state);
   }).catch((err) => {

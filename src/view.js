@@ -84,6 +84,7 @@ export default (state, i18n) => {
           urlInput.classList.remove('is-invalid');
           feedback.classList.remove('text-danger');
           urlInput.focus();
+          urlInput.value = '';
           feedback.classList.add('text-success');
           feedback.textContent = i18n.t('success');
           break;
